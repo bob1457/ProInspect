@@ -1,0 +1,6 @@
+{
+  "name": "ProInspect",
+  "description": "The gold standard in professional field inspection management, featuring registration credentials, settings, onboarding roadmap checklist, and transparent pricing plans.",
+  "requestFramePermissions": ["microphone", "camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
