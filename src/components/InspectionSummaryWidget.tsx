@@ -304,12 +304,12 @@ Report Prepared By: InspectPro Mobile Suite
 
       {/* PDF REPORT EXPORT CUSTOMIZER & PRINT MODAL */}
       {showPdfModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4 md:p-6 no-print">
+        <div className="fixed inset-0 z-[100] overflow-y-auto bg-slate-900/70 backdrop-blur-xs flex items-start md:items-center justify-center p-4 md:p-6 no-print">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
-            className="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-6xl w-full flex flex-col md:flex-row overflow-hidden max-h-[90vh]"
+            className="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-6xl w-full flex flex-col md:flex-row overflow-hidden max-h-[95vh] md:max-h-[90vh] my-auto"
           >
             {/* Customizer Sidebar (Left Panel) */}
             <div className="w-full md:w-80 bg-slate-50 border-b md:border-b-0 md:border-r border-slate-200 p-5 flex flex-col justify-between overflow-y-auto">
@@ -321,7 +321,8 @@ Report Prepared By: InspectPro Mobile Suite
                   </div>
                   <button 
                     onClick={() => setShowPdfModal(false)}
-                    className="p-1 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-slate-700 transition-colors md:hidden"
+                    className="p-1.5 rounded-lg hover:bg-slate-200 text-slate-400 hover:text-slate-700 transition-colors flex items-center justify-center"
+                    title="Close Dialog"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -428,7 +429,15 @@ Report Prepared By: InspectPro Mobile Suite
             </div>
 
             {/* Document Interactive Live Preview (Right Panel) */}
-            <div className="flex-1 bg-slate-200 p-4 md:p-6 overflow-y-auto flex justify-center items-start min-h-[50vh] md:min-h-0">
+            <div className="flex-1 bg-slate-200 p-4 md:p-6 overflow-y-auto flex justify-center items-start min-h-[50vh] md:min-h-0 relative">
+              {/* Floating Close Button for Desktop Preview */}
+              <button 
+                onClick={() => setShowPdfModal(false)}
+                className="absolute top-4 right-4 p-2 bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 rounded-full shadow-md transition-all border border-slate-300 hover:scale-105 active:scale-95 z-10 hidden md:flex items-center justify-center cursor-pointer"
+                title="Close Preview"
+              >
+                <X className="w-5 h-5" />
+              </button>
               <div className="bg-white text-slate-800 w-full max-w-[8.27in] min-h-[11.69in] p-8 rounded-lg shadow-md border border-slate-300 flex flex-col justify-between font-sans scale-95 origin-top md:scale-100">
                 
                 <div className="space-y-6">
