@@ -2835,7 +2835,7 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
 
       {/* MODAL 1: Upload New Credentials */}
       {showAddCredModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fade-in">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-[100] p-4 animate-fade-in">
           <div className="bg-white rounded-2xl w-full max-w-md border border-slate-200 shadow-2xl p-6 relative">
             <button 
               onClick={() => setShowAddCredModal(false)}
@@ -2904,7 +2904,7 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
 
       {/* MODAL 2: Create New Inspection */}
       {showAddInspectionModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fade-in">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-[100] p-4 animate-fade-in">
           <div className="bg-white rounded-2xl w-full max-w-md border border-slate-200 shadow-2xl p-6 relative">
             <button 
               onClick={() => setShowAddInspectionModal(false)}
@@ -2993,7 +2993,7 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
 
       {/* MODAL 3: Reset Password */}
       {showPasswordModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fade-in">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-[100] p-4 animate-fade-in">
           <div className="bg-white rounded-2xl w-full max-w-sm border border-slate-200 shadow-2xl p-6 relative">
             <button 
               onClick={() => setShowPasswordModal(false)}
@@ -3052,7 +3052,7 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
 
       {/* SUPPORT MODAL (Live Chat dialog representation) */}
       {showSupportModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-end md:items-center justify-center z-50 p-4 animate-fade-in">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-end md:items-center justify-center z-[100] p-4 animate-fade-in">
           <div className="bg-white rounded-2xl w-full max-w-md border border-slate-200 shadow-2xl flex flex-col h-[450px]">
             {/* Header */}
             <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-[#1e40af] text-white rounded-t-2xl">
@@ -3114,14 +3114,14 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
       {isQuickActionOpen && (
         <div 
           onClick={() => setIsQuickActionOpen(false)} 
-          className="fixed inset-0 bg-slate-900/15 backdrop-blur-[2px] z-45"
+          className="fixed inset-0 bg-slate-900/15 backdrop-blur-[2px] z-[95]"
         />
       )}
 
       {/* Floating Quick Actions Speed-Dial Stack */}
       <AnimatePresence>
         {isQuickActionOpen && (
-          <div className="fixed bottom-[150px] right-6 md:bottom-[96px] md:right-8 z-50 flex flex-col items-end gap-3.5">
+          <div className="fixed bottom-[150px] right-6 md:bottom-[96px] md:right-8 z-[100] flex flex-col items-end gap-3.5">
             {[
               {
                 label: 'New Inspection',
@@ -3177,10 +3177,10 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
       </AnimatePresence>
 
       {/* Floating Main Quick Action Trigger Button */}
-      <div className="fixed bottom-20 right-6 md:bottom-8 md:right-8 z-50">
+      <div className="fixed bottom-20 right-6 md:bottom-8 md:right-8 z-[100]">
         <button
           onClick={() => setIsQuickActionOpen(!isQuickActionOpen)}
-          className={`w-14 h-14 rounded-full bg-[#00288e] text-white flex items-center justify-center shadow-xl hover:bg-[#1e40af] transition-all transform hover:scale-105 active:scale-95 z-50 cursor-pointer ${
+          className={`w-14 h-14 rounded-full bg-[#00288e] text-white flex items-center justify-center shadow-xl hover:bg-[#1e40af] transition-all transform hover:scale-105 active:scale-95 z-[100] cursor-pointer ${
             isQuickActionOpen ? 'ring-4 ring-blue-100' : ''
           }`}
           title="Quick Actions"
