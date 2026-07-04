@@ -10,7 +10,7 @@ interface ViewSelectorProps {
 
 export default function ViewSelector({ currentView, onViewChange, theme, onToggleTheme }: ViewSelectorProps) {
   return (
-    <div className="w-full bg-slate-900 text-white border-b border-slate-800 py-3.5 px-4 sticky top-0 z-[70]">
+    <div id="view-selector-container" className="w-full bg-slate-900 text-white border-b border-slate-800 py-3.5 px-4 sticky top-0 z-[70] no-print print:hidden">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
         
         {/* Branding indicator */}

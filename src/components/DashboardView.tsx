@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
-  User, Award, Settings, LogOut, ClipboardList, Building, Plus, Upload, 
+  User, Award, Settings, LogOut, ClipboardList, Building, Plus, Upload, BookOpen,
   Bell, Wifi, WifiOff, PenTool, KeyRound, Fingerprint, HelpCircle, Check, Trash2, Search, X,
   Image, MessageSquare, Sparkles, Clock, CheckCircle2, AlertTriangle, Mic,
   ChevronLeft, ChevronRight, Menu, Calendar, MapPin, ArrowRight, CheckSquare,
@@ -22,6 +22,7 @@ import InspectionFieldMap from './InspectionFieldMap';
 import InspectionDetailsModal from './InspectionDetailsModal';
 import PropertyDashboardView from './PropertyDashboardView';
 import ReportsView from './ReportsView';
+import KnowledgeBaseView from './KnowledgeBaseView';
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -65,7 +66,7 @@ interface DashboardViewProps {
 }
 
 export default function DashboardView({ profile, onUpdateProfile, onSignOut }: DashboardViewProps) {
-  const [activeTab, setActiveTab] = useState<'inspections' | 'properties' | 'credentials' | 'settings' | 'activity' | 'schedule' | 'reports'>('schedule');
+  const [activeTab, setActiveTab] = useState<'inspections' | 'properties' | 'credentials' | 'settings' | 'activity' | 'schedule' | 'reports' | 'knowledge'>('schedule');
   
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -1213,6 +1214,18 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
               </button>
 
               <button 
+                onClick={() => setActiveTab('knowledge')}
+                title="Knowledge Base & RAG"
+                className={`flex items-center justify-center p-3 text-sm font-medium rounded-xl transition-all cursor-pointer ${
+                  activeTab === 'knowledge' 
+                    ? 'bg-[#dde1ff] text-[#00288e]' 
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <BookOpen className="w-5 h-5 shrink-0" />
+              </button>
+
+              <button 
                 onClick={() => setActiveTab('settings')}
                 title="Settings"
                 className={`flex items-center justify-center p-3 text-sm font-medium rounded-xl transition-all cursor-pointer ${
@@ -1301,6 +1314,18 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
                     {logs.filter(l => !l.isRead).length}
                   </span>
                 )}
+              </button>
+
+              <button 
+                onClick={() => setActiveTab('knowledge')}
+                className={`flex items-center gap-3.5 px-4 py-3 text-sm font-medium rounded-xl transition-all cursor-pointer ${
+                  activeTab === 'knowledge' 
+                    ? 'bg-[#dde1ff] text-[#00288e]' 
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <BookOpen className="w-5 h-5 shrink-0" />
+                Knowledge Base & RAG
               </button>
 
               <button 
@@ -2760,6 +2785,13 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
             </div>
           )}
 
+          {/* Knowledge Base Tab View */}
+          {activeTab === 'knowledge' && (
+            <div className="animate-fade-in">
+              <KnowledgeBaseView />
+            </div>
+          )}
+
         </div>
       </main>
 
@@ -2821,6 +2853,15 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
             <span className="absolute top-1 right-4 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse border-2 border-white" />
           )}
           Activity
+        </button>
+        <button 
+          onClick={() => setActiveTab('knowledge')} 
+          className={`flex flex-col items-center justify-center gap-1 flex-1 text-[10px] font-semibold transition-all ${
+            activeTab === 'knowledge' ? 'text-[#00288e]' : 'text-slate-400 hover:text-slate-600'
+          }`}
+        >
+          <BookOpen className="w-5 h-5" />
+          RAG KB
         </button>
         <button 
           onClick={() => setActiveTab('settings')} 
