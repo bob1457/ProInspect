@@ -235,87 +235,154 @@ html.dark, .dark {
 
 /* Print Styles for Professional Inspection PDF Reports */
 @media print {
-  /* Hide all app layers, selectors, side bars, navigation headers, and control interfaces */
-  html, body {
+  /* Set portrait page boundaries with professional margins */
+  @page {
+    size: portrait;
+    margin: 12mm 12mm 12mm 12mm;
+  }
+
+  /* Ensure the body and main viewport take full page width without overflows */
+  html, body, #root {
     background-color: #ffffff !important;
     color: #0f172a !important;
     font-size: 11px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
     margin: 0 !important;
     padding: 0 !important;
+    overflow: visible !important;
+    display: block !important;
+    float: none !important;
+    position: static !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  
-  #root, .sticky, button, .no-print, [role="dialog"], .fixed {
+
+  /* Reset layout constraints of modern flex wrappers in the DOM chain */
+  .flex, .flex-col, .flex-row {
+    display: block !important;
+    float: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Reset layout constraints of the main viewport */
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    display: block !important;
+    float: none !important;
+    position: static !important;
+  }
+
+  /* Explicitly exclude top-level navigation container, headers, sidebars, buttons and interactive controls */
+  #view-selector-container,
+  aside,
+  header,
+  .sticky,
+  button,
+  select,
+  input,
+  .no-print,
+  .print\:hidden,
+  [role="dialog"],
+  .fixed,
+  .toast,
+  .toast-notification,
+  #local-toast {
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
     pointer-events: none !important;
   }
 
-  /* Show only the designated printable document */
+  /* Ensure report container fills the printed output area precisely */
+  #compliance-official-report,
   #print-area {
     display: block !important;
     visibility: visible !important;
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
+    position: static !important;
     width: 100% !important;
     max-width: 100% !important;
-    padding: 30px !important;
+    padding: 0 !important;
     margin: 0 !important;
     background-color: #ffffff !important;
     color: #0f172a !important;
     box-shadow: none !important;
     border: none !important;
+    overflow: visible !important;
   }
 
+  #compliance-official-report *,
   #print-area * {
     visibility: visible !important;
     color: #0f172a !important;
-    border-color: #94a3b8 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    background-color: transparent !important;
   }
 
-  /* Ensure background colors of badges show on PDF */
-  #print-area .bg-emerald-500, #print-area .bg-emerald-50 {
+  /* Preserve card backgrounds, badge colors, and status indicators in printed reports */
+  #compliance-official-report .bg-emerald-50,
+  #compliance-official-report .bg-emerald-500,
+  #print-area .bg-emerald-50,
+  #print-area .bg-emerald-500 {
     background-color: #f0fdf4 !important;
     color: #166534 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  #print-area .bg-amber-500, #print-area .bg-amber-50 {
+  #compliance-official-report .bg-amber-50,
+  #compliance-official-report .bg-amber-500,
+  #print-area .bg-amber-50,
+  #print-area .bg-amber-500 {
     background-color: #fef3c7 !important;
     color: #92400e !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  #print-area .bg-indigo-500, #print-area .bg-indigo-50 {
+  #compliance-official-report .bg-indigo-50,
+  #compliance-official-report .bg-indigo-500,
+  #compliance-official-report .bg-\[\#dde1ff\]\/40,
+  #print-area .bg-indigo-50,
+  #print-area .bg-indigo-500 {
     background-color: #e0e7ff !important;
     color: #3730a3 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  /* Table styling preservation */
-  #print-area table {
-    width: 100% !important;
-    border-collapse: collapse !important;
-    margin-top: 15px !important;
-    margin-bottom: 15px !important;
+  #compliance-official-report .bg-slate-50,
+  #compliance-official-report .bg-slate-100,
+  #print-area .bg-slate-50,
+  #print-area .bg-slate-100 {
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  #print-area tr {
+  /* Avoid cutting off vital certification section rows mid-page */
+  #compliance-official-report .py-6,
+  #compliance-official-report .grid > div {
     page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
-  #print-area th {
-    background-color: #f1f5f9 !important;
-    color: #1e293b !important;
-    font-weight: 700 !important;
-    border-bottom: 2px solid #cbd5e1 !important;
-  }
-
-  #print-area td {
-    border-bottom: 1px solid #e2e8f0 !important;
+  /* Grid layout adjustments for multi-column checklist rendering on print */
+  #compliance-official-report .grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
   }
 }
 
