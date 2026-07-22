@@ -66,7 +66,7 @@ interface DashboardViewProps {
 }
 
 export default function DashboardView({ profile, onUpdateProfile, onSignOut }: DashboardViewProps) {
-  const [activeTab, setActiveTab] = useState<'inspections' | 'properties' | 'credentials' | 'settings' | 'activity' | 'schedule' | 'reports' | 'knowledge'>('schedule');
+  const [activeTab, setActiveTab] = useState<'inspections' | 'properties' | 'settings' | 'activity' | 'schedule' | 'reports' | 'knowledge'>('schedule');
   
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -134,6 +134,17 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
   const [newInspDate, setNewInspDate] = useState<string>('');
   const [selectedInspection, setSelectedInspection] = useState<InspectionItem | null>(null);
   const [selectedPropertyForDashboard, setSelectedPropertyForDashboard] = useState<InspectionItem | null>(null);
+
+  // Property filter for inspections page
+  const [selectedProperty, setSelectedProperty] = useState<string>('All Properties');
+
+  // Helper: Extract unique property names from inspections
+  const getUniqueProperties = (): string[] => {
+    const uniqueProps = Array.from(
+      new Set<string>(inspections.map(insp => insp.propertyName))
+    );
+    return uniqueProps.sort();
+  };
 
   // Generate 7-day activity data dynamically based on the current date (July 2, 2026)
   const last7DaysData = Array.from({ length: 7 }).map((_, idx) => {
@@ -301,13 +312,21 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
     }
   };
   
-  // Filtered inspections based on search query
-  const filteredInspections = inspections.filter(item => 
-    item.propertyName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    item.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (item.inspectorName && item.inspectorName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (item.clientName && item.clientName.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  // Filtered inspections based on search query and selected property
+  const filteredInspections = inspections
+    .filter(item => {
+      // Filter by selected property
+      if (selectedProperty !== 'All Properties' && item.propertyName !== selectedProperty) {
+        return false;
+      }
+      // Filter by search query
+      return (
+        item.propertyName.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        item.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.inspectorName && item.inspectorName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item.clientName && item.clientName.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+    });
 
   // Activity Log Search & Status Filter
   const [activitySearchText, setActivitySearchText] = useState<string>('');
@@ -477,7 +496,7 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
             return {
               ...item,
               status: 'IN_PROGRESS' as const,
-              subtasks: item.subtasks.map((st, idx) => idx === 0 ? { ...st, completed: true } : st)
+              subtasks: item.subtasks?.map((st, idx) => idx === 0 ? { ...st, completed: true } : st)
             };
           }
           // If in progress, 15% chance of completing
@@ -487,7 +506,7 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
               ...item,
               status: 'COMPLETED' as const,
               score: Math.floor(Math.random() * 10) + 90, // score 90-99
-              subtasks: item.subtasks.map(st => ({ ...st, completed: true }))
+              subtasks: item.subtasks?.map(st => ({ ...st, completed: true }))
             };
           }
           return item;
@@ -969,10 +988,19 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
     }
   }, [activeTab]);
 
-  // Analytics for top summary card row
-  const pendingInspectionsCount = inspections.filter(i => i.status === 'IN_PROGRESS' || i.status === 'SCHEDULED').length;
+  // Analytics for top summary card row - filtered by selected property
+  const getPropertyFilteredInspections = () => {
+    if (selectedProperty === 'All Properties') {
+      return inspections;
+    }
+    return inspections.filter(i => i.propertyName === selectedProperty);
+  };
+
+  const propertyFilteredInspections = getPropertyFilteredInspections();
+
+  const pendingInspectionsCount = propertyFilteredInspections.filter(i => i.status === 'IN_PROGRESS' || i.status === 'SCHEDULED').length;
   
-  const completedThisWeekCount = inspections.filter(i => {
+  const completedThisWeekCount = propertyFilteredInspections.filter(i => {
     if (i.status !== 'COMPLETED') return false;
     try {
       const inspDate = new Date(i.date);
@@ -1032,7 +1060,9 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
             >
               <ChevronRight className="w-5 h-5" />
             </button>
-            <ClipboardList className="w-7 h-7 text-[#00288e]" title="ProInspect" />
+            <div title="ProInspect">
+              <ClipboardList className="w-7 h-7 text-[#00288e]" />
+            </div>
           </div>
         ) : (
           <div className="flex items-center justify-between mb-2">
@@ -1186,7 +1216,7 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
                 <FileText className="w-5 h-5 shrink-0" />
               </button>
 
-              <button 
+              {/* <button 
                 onClick={() => setActiveTab('credentials')}
                 title="Credentials"
                 className={`flex items-center justify-center p-3 text-sm font-medium rounded-xl transition-all cursor-pointer ${
@@ -1196,7 +1226,7 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
                 }`}
               >
                 <Award className="w-5 h-5 shrink-0" />
-              </button>
+              </button> */}
 
               <button 
                 onClick={() => setActiveTab('activity')}
@@ -1285,18 +1315,6 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
               >
                 <FileText className="w-5 h-5 shrink-0" />
                 Reports & Compliance
-              </button>
-
-              <button 
-                onClick={() => setActiveTab('credentials')}
-                className={`flex items-center gap-3.5 px-4 py-3 text-sm font-medium rounded-xl transition-all cursor-pointer ${
-                  activeTab === 'credentials' 
-                    ? 'bg-[#dde1ff] text-[#00288e]' 
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                }`}
-              >
-                <Award className="w-5 h-5 shrink-0" />
-                Credentials
               </button>
 
               <button 
@@ -2265,6 +2283,42 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
                 </div>
               </div>
 
+              {/* Property Filter Dropdown */}
+              <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm animate-fade-in">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="flex-1">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2.5">
+                      📍 Filter by Property
+                    </label>
+                    <select
+                      value={selectedProperty}
+                      onChange={(e) => setSelectedProperty(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#dde1ff] focus:border-[#00288e] transition-all cursor-pointer hover:border-slate-300"
+                    >
+                      <option value="All Properties">All Properties</option>
+                      {getUniqueProperties().map(prop => (
+                        <option key={prop} value={prop}>
+                          {prop}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {selectedProperty !== 'All Properties' && (
+                    <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-100 rounded-xl shrink-0">
+                      <span className="text-[10px] font-bold text-[#00288e] uppercase tracking-wider">
+                        Viewing: {selectedProperty}
+                      </span>
+                      <button
+                        onClick={() => setSelectedProperty('All Properties')}
+                        className="text-[#00288e] hover:text-[#1e40af] font-bold text-xs ml-1 underline transition-colors"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {/* Inspection Summary Analytics Widget */}
               <InspectionSummaryWidget inspections={inspections} />
 
@@ -2735,56 +2789,6 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
             );
           })()}
 
-          {/* Credentials Tab View */}
-          {activeTab === 'credentials' && (
-            <div className="space-y-6 animate-fade-in">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold text-slate-950 mb-1">State Registry Clearances</h2>
-                  <p className="text-sm text-slate-500">Your authorized certifications for official property reports.</p>
-                </div>
-                <button 
-                  onClick={() => setShowAddCredModal(true)}
-                  className="bg-[#00288e] text-white hover:bg-[#1e40af] px-4 py-2 text-sm font-semibold rounded-xl flex items-center gap-1.5"
-                >
-                  <Plus className="w-4 h-4" /> Add Certificate
-                </button>
-              </div>
-
-              <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                  <h4 className="font-bold text-slate-900">Official Credentials Ledger</h4>
-                  <span className="text-xs font-semibold text-green-600 flex items-center gap-1">
-                    <Check className="w-4 h-4" /> 100% compliant
-                  </span>
-                </div>
-                <div className="p-6 space-y-6">
-                  {credentials.map(cred => (
-                    <div key={cred.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 border border-slate-100 rounded-xl hover:bg-slate-50/40 transition-colors">
-                      <div className="flex items-start gap-3.5">
-                        <div className="w-10 h-10 rounded-lg bg-blue-50 text-[#00288e] flex items-center justify-center shrink-0">
-                          <Award className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <p className="font-bold text-slate-950 text-sm">{cred.type}</p>
-                          <p className="text-xs text-slate-500 mt-0.5">Code Ledger ID: <strong className="font-mono text-slate-700">{cred.licenseId}</strong></p>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between sm:justify-end gap-6 text-xs text-slate-500">
-                        <span>Expires: <strong>{cred.expiryDate}</strong></span>
-                        <span className={`px-2.5 py-1 rounded-full font-bold uppercase ${
-                          cred.status === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
-                        }`}>
-                          {cred.status}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Knowledge Base Tab View */}
           {activeTab === 'knowledge' && (
             <div className="animate-fade-in">
@@ -2832,15 +2836,6 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
         >
           <FileText className="w-5 h-5" />
           Reports
-        </button>
-        <button 
-          onClick={() => setActiveTab('credentials')} 
-          className={`flex flex-col items-center justify-center gap-1 flex-1 text-[10px] font-semibold transition-all ${
-            activeTab === 'credentials' ? 'text-[#00288e]' : 'text-slate-400 hover:text-slate-600'
-          }`}
-        >
-          <Award className="w-5 h-5" />
-          Clearances
         </button>
         <button 
           onClick={() => setActiveTab('activity')} 

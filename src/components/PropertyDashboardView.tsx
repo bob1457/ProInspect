@@ -426,7 +426,9 @@ export default function PropertyDashboardView({
             >
               <ChevronRight className="w-5 h-5" />
             </button>
-            <Building className="w-6 h-6 text-indigo-300" title="Rental Inspect Pro" />
+            <div title="Rental Inspect Pro">
+              <Building className="w-6 h-6 text-indigo-300" />
+            </div>
           </div>
         ) : (
           <div className="p-6 border-b border-indigo-900">

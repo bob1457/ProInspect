@@ -1,9 +1,9 @@
 import React from 'react';
-import { Layers, ShieldCheck, UserCheck, Milestone, DollarSign, Sun, Moon, Home } from 'lucide-react';
+import { Layers, ShieldCheck, UserCheck, Milestone, DollarSign, Sun, Moon, Home, Lock } from 'lucide-react';
 
 interface ViewSelectorProps {
-  currentView: 'landing' | 'registration' | 'dashboard' | 'onboarding' | 'pricing';
-  onViewChange: (view: 'landing' | 'registration' | 'dashboard' | 'onboarding' | 'pricing') => void;
+  currentView: 'landing' | 'signin' | 'registration' | 'dashboard' | 'onboarding' | 'pricing';
+  onViewChange: (view: 'landing' | 'signin' | 'registration' | 'dashboard' | 'onboarding' | 'pricing') => void;
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
 }
@@ -35,10 +35,11 @@ export default function ViewSelector({ currentView, onViewChange, theme, onToggl
             }`}
           >
             <Home className="w-4 h-4 shrink-0" />
-            Landing Page (5)
+            {/* Landing Page (5) */}
+            Home
           </button>
 
-          <button 
+          {/* <button 
             onClick={() => onViewChange('registration')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold tracking-wide transition-all cursor-pointer ${
               currentView === 'registration' 
@@ -48,9 +49,9 @@ export default function ViewSelector({ currentView, onViewChange, theme, onToggl
           >
             <ShieldCheck className="w-4 h-4 shrink-0" />
             Registration (1)
-          </button>
+          </button> */}
 
-          <button 
+          {/* <button 
             onClick={() => onViewChange('onboarding')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold tracking-wide transition-all cursor-pointer ${
               currentView === 'onboarding' 
@@ -60,9 +61,9 @@ export default function ViewSelector({ currentView, onViewChange, theme, onToggl
           >
             <Milestone className="w-4 h-4 shrink-0" />
             Onboarding (3)
-          </button>
+          </button> */}
 
-          <button 
+          {/* <button 
             onClick={() => onViewChange('dashboard')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold tracking-wide transition-all cursor-pointer ${
               currentView === 'dashboard' 
@@ -72,7 +73,7 @@ export default function ViewSelector({ currentView, onViewChange, theme, onToggl
           >
             <UserCheck className="w-4 h-4 shrink-0" />
             Inspector (2)
-          </button>
+          </button> */}
 
           <button 
             onClick={() => onViewChange('pricing')}
@@ -83,7 +84,7 @@ export default function ViewSelector({ currentView, onViewChange, theme, onToggl
             }`}
           >
             <DollarSign className="w-4 h-4 shrink-0" />
-            Pricing (4)
+            Pricing
           </button>
         </div>
 

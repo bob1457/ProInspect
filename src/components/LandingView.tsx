@@ -8,12 +8,14 @@ import {
 interface LandingViewProps {
   onStartFreeTrial: () => void;
   onNavigateToPricing: () => void;
+  onSignIn: () => void;
   onTriggerToast: (message: string) => void;
 }
 
 export default function LandingView({ 
   onStartFreeTrial, 
-  onNavigateToPricing, 
+  onNavigateToPricing,
+  onSignIn,
   onTriggerToast 
 }: LandingViewProps) {
   const [showDemoModal, setShowDemoModal] = useState(false);
@@ -89,6 +91,12 @@ export default function LandingView({
               className="bg-[#00288e] hover:bg-blue-800 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-all shadow-md shadow-blue-900/10 hover:shadow-lg cursor-pointer flex items-center gap-1.5"
             >
               <span>Start Free Trial</span>
+            </button>
+            <button 
+              onClick={onSignIn}
+              className="text-sm font-bold text-slate-600 hover:text-[#00288e] px-4 py-2 transition-colors cursor-pointer"
+            >
+              Sign In
             </button>
           </div>
         </div>

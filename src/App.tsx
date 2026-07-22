@@ -3,6 +3,7 @@ import { initialProfile } from './data';
 import { PersonalInfo } from './types';
 import ViewSelector from './components/ViewSelector';
 import LandingView from './components/LandingView';
+import SignInView from './components/SignInView';
 import RegistrationView from './components/RegistrationView';
 import DashboardView from './components/DashboardView';
 import OnboardingView from './components/OnboardingView';
@@ -10,7 +11,7 @@ import PricingView from './components/PricingView';
 import { Sparkles, Trophy, CheckCircle, Shield, Bell, X } from 'lucide-react';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'landing' | 'registration' | 'dashboard' | 'onboarding' | 'pricing'>('landing');
+  const [currentView, setCurrentView] = useState<'landing' | 'signin' | 'registration' | 'dashboard' | 'onboarding' | 'pricing'>('landing');
   const [profile, setProfile] = useState<PersonalInfo>(initialProfile);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [showCelebration, setShowCelebration] = useState<boolean>(false);
@@ -81,7 +82,22 @@ export default function App() {
           <LandingView 
             onStartFreeTrial={() => setCurrentView('registration')}
             onNavigateToPricing={() => setCurrentView('pricing')}
+            onSignIn={() => setCurrentView('signin')}
             onTriggerToast={(msg) => setToastMessage(msg)}
+          />
+        )}
+
+        {currentView === 'signin' && (
+          <SignInView 
+            onSignInSuccess={(info) => {
+              setProfile(prev => ({
+                ...prev,
+                fullName: info.fullName || prev.fullName,
+                email: info.email || prev.email,
+              }));
+              setCurrentView('dashboard');
+            }}
+            onNavigateToLanding={() => setCurrentView('landing')}
           />
         )}
 
@@ -107,7 +123,7 @@ export default function App() {
             onUpdateProfile={handleUpdateProfile}
             onSignOut={() => {
               setProfile(initialProfile);
-              setCurrentView('registration');
+              setCurrentView('landing');
             }}
           />
         )}
