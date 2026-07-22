@@ -138,6 +138,9 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
   // Property filter for inspections page
   const [selectedProperty, setSelectedProperty] = useState<string>('All Properties');
 
+  // Sub-tab navigation for inspection page
+  const [inspectionSubTab, setInspectionSubTab] = useState<'records' | 'schedule' | 'notes' | 'others'>('records');
+
   // Helper: Extract unique property names from inspections
   const getUniqueProperties = (): string[] => {
     const uniqueProps = Array.from(
@@ -2215,7 +2218,7 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <h2 className="text-2xl font-bold text-[#00288e] mb-1">Your Property Inspections</h2>
-                  <p className="text-sm text-slate-500">View checklist sheets, safety scores, and generated PDF reports.</p>
+                  <p className="text-sm text-slate-500">Manage inspections, schedule appointments, and track activity.</p>
                 </div>
                 <button 
                   onClick={() => setShowAddInspectionModal(true)}
@@ -2226,65 +2229,118 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
                 </button>
               </div>
 
-              {/* High-level Summary Card Row */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 animate-fade-in">
-                {/* Pending Inspections Card */}
-                <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-all">
-                  <div className="w-12 h-12 bg-blue-50 border border-blue-100 text-[#00288e] rounded-xl flex items-center justify-center shrink-0">
-                    <Clock className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                      Pending Inspections
-                    </span>
-                    <strong className="block text-2xl font-black text-slate-900 mt-0.5">
-                      {pendingInspectionsCount}
-                    </strong>
-                    <span className="block text-[10px] text-slate-500 font-semibold mt-0.5">
-                      Scheduled & in-progress
-                    </span>
-                  </div>
-                </div>
-
-                {/* Completed This Week Card */}
-                <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-all">
-                  <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                      Completed This Week
-                    </span>
-                    <strong className="block text-2xl font-black text-slate-900 mt-0.5">
-                      {completedThisWeekCount}
-                    </strong>
-                    <span className="block text-[10px] text-slate-500 font-semibold mt-0.5">
-                      Verified safety audits
-                    </span>
-                  </div>
-                </div>
-
-                {/* Active Alerts Card */}
-                <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-all">
-                  <div className="w-12 h-12 bg-rose-50 border border-rose-100 text-rose-600 rounded-xl flex items-center justify-center shrink-0">
-                    <AlertTriangle className="w-6 h-6 text-rose-500" />
-                  </div>
-                  <div>
-                    <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                      Active Alerts
-                    </span>
-                    <strong className="block text-2xl font-black text-slate-900 mt-0.5">
-                      {activeAlertsCount}
-                    </strong>
-                    <span className="block text-[10px] text-slate-500 font-semibold mt-0.5">
-                      Requires priority action
-                    </span>
-                  </div>
+              {/* Inspection Sub-Tab Navigation */}
+              <div className="bg-white border border-slate-200 rounded-2xl p-3 shadow-sm">
+                <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide">
+                  <button
+                    onClick={() => setInspectionSubTab('records')}
+                    className={`px-4 py-2.5 text-sm font-bold rounded-xl whitespace-nowrap transition-all flex items-center gap-2 ${
+                      inspectionSubTab === 'records'
+                        ? 'bg-[#00288e] text-white shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    }`}
+                  >
+                    <ClipboardList className="w-4 h-4" />
+                    <span>Inspections</span>
+                  </button>
+                  <button
+                    onClick={() => setInspectionSubTab('schedule')}
+                    className={`px-4 py-2.5 text-sm font-bold rounded-xl whitespace-nowrap transition-all flex items-center gap-2 ${
+                      inspectionSubTab === 'schedule'
+                        ? 'bg-[#00288e] text-white shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    }`}
+                  >
+                    <Calendar className="w-4 h-4" />
+                    <span>Schedule</span>
+                  </button>
+                  <button
+                    onClick={() => setInspectionSubTab('notes')}
+                    className={`px-4 py-2.5 text-sm font-bold rounded-xl whitespace-nowrap transition-all flex items-center gap-2 ${
+                      inspectionSubTab === 'notes'
+                        ? 'bg-[#00288e] text-white shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    }`}
+                  >
+                    <PenTool className="w-4 h-4" />
+                    <span>Notes</span>
+                  </button>
+                  <button
+                    onClick={() => setInspectionSubTab('others')}
+                    className={`px-4 py-2.5 text-sm font-bold rounded-xl whitespace-nowrap transition-all flex items-center gap-2 ${
+                      inspectionSubTab === 'others'
+                        ? 'bg-[#00288e] text-white shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    }`}
+                  >
+                    <AlertTriangle className="w-4 h-4" />
+                    <span>Others</span>
+                  </button>
                 </div>
               </div>
 
-              {/* Property Filter Dropdown */}
-              <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm animate-fade-in">
+              {/* SUB-TAB 1: INSPECTIONS - Records View */}
+              {inspectionSubTab === 'records' && (
+                <div className="space-y-8 animate-fade-in">
+                  {/* High-level Summary Card Row */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5 animate-fade-in">
+                    {/* Pending Inspections Card */}
+                    <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-all">
+                      <div className="w-12 h-12 bg-blue-50 border border-blue-100 text-[#00288e] rounded-xl flex items-center justify-center shrink-0">
+                        <Clock className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          Pending Inspections
+                        </span>
+                        <strong className="block text-2xl font-black text-slate-900 mt-0.5">
+                          {pendingInspectionsCount}
+                        </strong>
+                        <span className="block text-[10px] text-slate-500 font-semibold mt-0.5">
+                          Scheduled & in-progress
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Completed This Week Card */}
+                    <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-all">
+                      <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
+                        <CheckCircle2 className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          Completed This Week
+                        </span>
+                        <strong className="block text-2xl font-black text-slate-900 mt-0.5">
+                          {completedThisWeekCount}
+                        </strong>
+                        <span className="block text-[10px] text-slate-500 font-semibold mt-0.5">
+                          Verified safety audits
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Active Alerts Card */}
+                    <div className="bg-white border border-slate-200/80 rounded-2xl p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-all">
+                      <div className="w-12 h-12 bg-rose-50 border border-rose-100 text-rose-600 rounded-xl flex items-center justify-center shrink-0">
+                        <AlertTriangle className="w-6 h-6 text-rose-500" />
+                      </div>
+                      <div>
+                        <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          Active Alerts
+                        </span>
+                        <strong className="block text-2xl font-black text-slate-900 mt-0.5">
+                          {activeAlertsCount}
+                        </strong>
+                        <span className="block text-[10px] text-slate-500 font-semibold mt-0.5">
+                          Requires priority action
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Property Filter Dropdown */}
+                  <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm animate-fade-in">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div className="flex-1">
                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2.5">
@@ -2320,94 +2376,21 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
               </div>
 
               {/* Inspection Summary Analytics Widget */}
-              <InspectionSummaryWidget inspections={inspections} />
+              {/* <InspectionSummaryWidget inspections={inspections} /> */}
 
-              {/* 7-Day Inspection Activity Chart Card */}
-              <div className="bg-white border border-slate-200/80 rounded-2xl p-5 md:p-6 shadow-sm animate-fade-in space-y-5">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-                  <div>
-                    <span className="text-[10px] font-extrabold text-[#00288e] bg-[#dde1ff]/60 px-2.5 py-1 rounded-md uppercase tracking-wider animate-pulse">
-                      Live Analytics
-                    </span>
-                    <h3 className="text-base font-extrabold text-slate-900 mt-2 tracking-tight">Inspection Activity (Last 7 Days)</h3>
-                  </div>
-                  <div className="flex items-center gap-4 text-[11px] font-bold text-slate-500">
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-3 h-3 bg-[#00288e] rounded-xs" />
-                      <span>Completed</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-3 h-3 bg-[#818cf8] rounded-xs" />
-                      <span>Pending / Scheduled</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="h-64 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={last7DaysData}
-                      margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                      <XAxis 
-                        dataKey="name" 
-                        stroke="#94a3b8" 
-                        fontSize={10} 
-                        fontWeight={600}
-                        tickLine={false} 
-                        axisLine={false}
-                        dy={8}
-                      />
-                      <YAxis 
-                        stroke="#94a3b8" 
-                        fontSize={10} 
-                        fontWeight={600}
-                        tickLine={false} 
-                        axisLine={false}
-                        allowDecimals={false}
-                        dx={-8}
-                      />
-                      <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f8fafc' }} />
-                      <Bar 
-                        dataKey="Completed" 
-                        stackId="a" 
-                        fill="#00288e" 
-                        radius={[0, 0, 0, 0]} 
-                        maxBarSize={40}
-                      />
-                      <Bar 
-                        dataKey="Pending" 
-                        stackId="a" 
-                        fill="#818cf8" 
-                        radius={[4, 4, 0, 0]} 
-                        maxBarSize={40}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
+              {/* Note: 7-Day Chart moved to Tab 4 (Others) */}
 
               {/* Active Calendar Inspection Notifications & Reminders Center */}
-              <InspectionNotificationCenter 
+              {/* <InspectionNotificationCenter 
                 inspections={inspections}
                 onTriggerToast={(msg) => setToastMessage(msg)}
                 pushNotificationsEnabled={pushNotifications}
                 onTogglePushNotifications={(val) => setPushNotifications(val)}
-              />
+              /> */}
 
-              {/* Inspector Quick Notes & Scratchpad Widget */}
-              <QuickNotesWidget 
-                onConvertNoteToInspection={handleConvertNoteToInspection}
-                onTriggerToast={(msg) => setToastMessage(msg)}
-              />
+              {/* Inspector Quick Notes & Scratchpad Widget - MOVED TO TAB 3 */}
 
-
-              {/* Dynamic Interactive Calendar Component */}
-              <InspectionCalendar 
-                inspections={inspections}
-                onAddInspectionClick={() => setShowAddInspectionModal(true)}
-              />
+              {/* Note: Calendar moved to Tab 2 (Inspection Schedule) */}
 
               <div className="space-y-4 pt-4 border-t border-slate-100">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -2683,111 +2666,520 @@ export default function DashboardView({ profile, onUpdateProfile, onSignOut }: D
             </div>
           )}
 
-          {/* Properties Tab View */}
-          {activeTab === 'properties' && (() => {
-            const uniqueProperties: { propertyName: string; address: string; clientName?: string; inspection: InspectionItem }[] = [];
-            const propertyNamesSeen = new Set<string>();
-            inspections.forEach(item => {
-              if (!propertyNamesSeen.has(item.propertyName)) {
-                propertyNamesSeen.add(item.propertyName);
-                uniqueProperties.push({
-                  propertyName: item.propertyName,
-                  address: item.address,
-                  clientName: item.clientName,
-                  inspection: item
-                });
-              }
-            });
-
-            return (
-              <div className="space-y-8 animate-fade-in">
+          {/* SUB-TAB 2: INSPECTION SCHEDULE */}
+          {inspectionSubTab === 'schedule' && (
+            <div className="space-y-8 animate-fade-in">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl font-bold text-slate-950 mb-1">Managed Portfolios</h2>
-                  <p className="text-sm text-slate-500">View properties currently linked to apex state board registry codes.</p>
+                  <h2 className="text-2xl font-bold text-[#00288e] mb-1">Inspection Schedule</h2>
+                  <p className="text-sm text-slate-500">View upcoming appointments, schedule new site audits, and track locations.</p>
                 </div>
+              </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm text-center space-y-3">
-                    <div className="w-12 h-12 bg-blue-100 text-[#00288e] rounded-xl flex items-center justify-center mx-auto">
-                      <Building className="w-6 h-6" />
+              {/* Dynamic Schedule Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                {/* LEFT COLUMN (5 Columns): Add Inspection & Upcoming Appointments Timeline */}
+                <div className="lg:col-span-5 space-y-6">
+                  
+                  {/* Inline Form: Schedule New Site Inspection */}
+                  <div className="bg-white border border-slate-200/85 rounded-2xl p-5 shadow-sm">
+                    <div className="flex items-center gap-2.5 pb-4 mb-4 border-b border-slate-100">
+                      <div className="p-2 rounded-lg bg-indigo-50 text-[#00288e]">
+                        <Calendar className="w-4 h-4" />
+                      </div>
+                      <h3 className="font-extrabold text-slate-900 text-sm">Schedule Site Inspection</h3>
                     </div>
-                    <div>
-                      <p className="text-2xl font-extrabold text-slate-950">{uniqueProperties.length}</p>
-                      <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Total Buildings</p>
-                    </div>
-                  </div>
-                  <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm text-center space-y-3">
-                    <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mx-auto">
-                      <Check className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-extrabold text-[#00288e]">247</p>
-                      <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Units Certified</p>
-                    </div>
-                  </div>
-                  <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm text-center space-y-3">
-                    <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mx-auto">
-                      <ClipboardList className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-extrabold text-slate-950">
-                        {inspections.filter(i => i.status === 'SCHEDULED' || i.status === 'IN_PROGRESS').length}
-                      </p>
-                      <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Pending Syncs</p>
-                    </div>
-                  </div>
-                </div>
 
-                {/* Properties List Block */}
-                <div className="space-y-4">
-                  <div className="border-b border-slate-200 pb-3 flex items-center justify-between">
-                    <div>
-                      <h3 className="text-lg font-extrabold text-slate-950">Registered Property Assets</h3>
-                      <p className="text-xs text-slate-500 font-medium">Click any registered asset card to inspect or compile audits.</p>
-                    </div>
-                    <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
-                      {uniqueProperties.length} Assets
-                    </span>
-                  </div>
+                    <form onSubmit={handleAddInspection} className="space-y-4">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Property Name</label>
+                        <input 
+                          type="text"
+                          required
+                          placeholder="e.g. Oakwood Luxury Apartments"
+                          value={newInspProperty}
+                          onChange={(e) => setNewInspProperty(e.target.value)}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#dde1ff] text-slate-800 font-medium"
+                        />
+                      </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    {uniqueProperties.map((prop, idx) => (
-                      <div
-                        key={idx}
-                        onClick={() => setSelectedPropertyForDashboard(prop.inspection)}
-                        className="bg-white border border-slate-200 hover:border-[#00288e]/30 hover:shadow-lg rounded-2xl p-5 cursor-pointer transition-all flex flex-col justify-between space-y-4 group active:scale-[0.99]"
-                      >
-                        <div className="flex gap-4 items-start">
-                          <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#00288e] flex items-center justify-center shrink-0 group-hover:bg-[#dde1ff] transition-colors">
-                            <Building className="w-6 h-6" />
-                          </div>
-                          <div>
-                            <h4 className="font-extrabold text-slate-900 group-hover:text-[#00288e] transition-colors text-sm sm:text-base">
-                              {prop.propertyName}
-                            </h4>
-                            <p className="text-xs text-slate-500 font-medium mt-1">
-                              {prop.address}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="border-t border-slate-100 pt-4 flex items-center justify-between text-xs text-slate-500">
-                          <div>
-                            <span className="block text-[10px] text-slate-400 font-bold uppercase">Client Contact</span>
-                            <span className="font-semibold text-slate-700">{prop.clientName || 'Private Portfolio'}</span>
-                          </div>
-                          <span className="text-[#00288e] font-black group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                            Launch Dashboard →
-                          </span>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Site Location / Address</label>
+                        <div className="relative">
+                          <input 
+                            type="text"
+                            required
+                            placeholder="e.g. 402 Oakwood Dr, Suite 100, Austin, TX"
+                            value={newInspAddress}
+                            onChange={(e) => setNewInspAddress(e.target.value)}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 pl-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#dde1ff] text-slate-800 font-medium"
+                          />
+                          <MapPin className="absolute left-2.5 top-3 w-4 h-4 text-slate-400" />
                         </div>
                       </div>
-                    ))}
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Date</label>
+                          <input 
+                            type="date"
+                            required
+                            value={newInspDate}
+                            onChange={(e) => setNewInspDate(e.target.value)}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#dde1ff] text-slate-800 font-semibold"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Inspection Type</label>
+                          <select 
+                            value={newInspType}
+                            onChange={(e) => setNewInspType(e.target.value)}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#dde1ff] text-slate-800 font-medium"
+                          >
+                            <option value="Full Structural">Full Structural</option>
+                            <option value="WDI / Termite">WDI / Termite</option>
+                            <option value="Lead-Based Paint">Lead-Based Paint</option>
+                            <option value="Mold & Moisture">Mold & Moisture</option>
+                            <option value="Electrical Safety">Electrical Safety</option>
+                            <option value="HVAC Audit">HVAC Audit</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Client Name (Optional)</label>
+                        <div className="relative">
+                          <input 
+                            type="text"
+                            placeholder="e.g. John Doe (Property Owner)"
+                            value={newInspClientName}
+                            onChange={(e) => setNewInspClientName(e.target.value)}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 pl-8 text-sm focus:outline-none focus:ring-2 focus:ring-[#dde1ff] text-slate-800 font-medium"
+                          />
+                          <User className="absolute left-2.5 top-3 w-4 h-4 text-slate-400" />
+                        </div>
+                      </div>
+
+                      <button 
+                        type="submit"
+                        className="w-full py-2.5 bg-[#00288e] text-white font-bold text-xs rounded-xl hover:bg-[#1e40af] transition-all flex items-center justify-center gap-1.5 shadow-sm hover:shadow-indigo-100 cursor-pointer"
+                      >
+                        <Plus className="w-4 h-4" />
+                        <span>Schedule Appointment</span>
+                      </button>
+                    </form>
                   </div>
+
+                  {/* Upcoming Appointments Timeline / List */}
+                  <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                    <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-slate-400" />
+                        <h3 className="font-extrabold text-slate-900 text-sm">Upcoming Appointments</h3>
+                      </div>
+                      <span className="text-[10px] font-bold text-slate-500 bg-slate-50 border border-slate-150 px-2 py-0.5 rounded-lg">
+                        {inspections.filter(item => item.status !== 'COMPLETED').length} scheduled
+                      </span>
+                    </div>
+
+                    <div className="space-y-3 max-h-[360px] overflow-y-auto pr-1">
+                      {inspections.filter(item => item.status !== 'COMPLETED').length === 0 ? (
+                        <div className="text-center py-8">
+                          <p className="text-xs text-slate-400 font-medium">No upcoming inspections scheduled.</p>
+                        </div>
+                      ) : (
+                        inspections
+                          .filter(item => item.status !== 'COMPLETED')
+                          .map((item) => (
+                            <div key={item.id} className="p-3 bg-slate-50/50 hover:bg-slate-50 border border-slate-100 rounded-xl transition-all relative group">
+                              <div className="flex items-start justify-between gap-2 mb-1.5">
+                                <div>
+                                  <h4 className="font-bold text-xs text-slate-950 group-hover:text-[#00288e] transition-colors">{item.propertyName}</h4>
+                                  <div className="flex flex-wrap gap-1 items-center mt-0.5">
+                                    <span className="inline-block text-[9px] font-extrabold px-1.5 py-0.5 rounded-md bg-[#dde1ff] text-[#00288e] uppercase">
+                                      {item.type}
+                                    </span>
+                                    {item.isOfflineDraft && (
+                                      <span className="inline-block text-[8px] font-extrabold px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-700 uppercase">
+                                        Offline Draft
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                                <span className={`text-[8px] font-extrabold px-2 py-0.5 rounded-full ${
+                                  item.status === 'IN_PROGRESS' 
+                                    ? 'bg-amber-100 text-amber-800' 
+                                    : 'bg-indigo-100 text-[#00288e]'
+                                }`}>
+                                  {item.status}
+                                </span>
+                              </div>
+
+                              <div className="space-y-1.5 text-slate-500 text-[11px] font-medium">
+                                <div className="flex items-center gap-1.5">
+                                  <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                  <span className="truncate">{item.address}</span>
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                  <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                  <span>{item.date}</span>
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                  <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                  <span className="truncate">{item.clientName}</span>
+                                </div>
+                              </div>
+
+                              {/* Subtask checklist progress bar & dropdown toggle */}
+                              {item.subtasks && item.subtasks.length > 0 && (
+                                <div className="mt-3 pt-2 border-t border-slate-100 space-y-2">
+                                  <div 
+                                    className="flex items-center justify-between text-[10px] font-bold text-slate-500 cursor-pointer hover:text-[#00288e] transition-colors"
+                                    onClick={(e) => toggleChecklistExpanded(item.id, e)}
+                                  >
+                                    <span className="flex items-center gap-1">
+                                      <CheckSquare className="w-3.5 h-3.5 text-indigo-500" />
+                                      <span>On-site checklist ({item.subtasks.filter(t => t.completed).length}/{item.subtasks.length})</span>
+                                    </span>
+                                    <span className="text-[#00288e] underline">
+                                      {expandedChecklists[item.id] ? 'Hide' : 'Show Checklist'}
+                                    </span>
+                                  </div>
+                                  
+                                  {/* Small inline progress bar */}
+                                  <div className="w-full bg-slate-200 h-1 rounded-full overflow-hidden">
+                                    <div 
+                                      className="bg-indigo-600 h-full transition-all duration-300"
+                                      style={{ width: `${(item.subtasks.filter(t => t.completed).length / item.subtasks.length) * 100}%` }}
+                                    />
+                                  </div>
+
+                                  {/* Expanded checklists */}
+                                  {expandedChecklists[item.id] && (
+                                    <div className="space-y-1.5 pt-1 animate-fade-in max-h-40 overflow-y-auto pr-1">
+                                      {item.subtasks.map(task => (
+                                        <div 
+                                          key={task.id} 
+                                          className="flex items-center gap-2 p-1.5 bg-white border border-slate-100 rounded-lg hover:bg-slate-50 transition-colors"
+                                          onClick={(e) => handleToggleSubtaskFromList(item.id, task.id, e)}
+                                        >
+                                          <input 
+                                            type="checkbox"
+                                            checked={task.completed}
+                                            onChange={(e) => {}} // handled by parent div click
+                                            className="w-3.5 h-3.5 text-[#00288e] focus:ring-indigo-400 border-slate-300 rounded cursor-pointer"
+                                          />
+                                          <span className={`text-[10px] text-slate-600 font-bold leading-normal cursor-pointer ${task.completed ? 'line-through text-slate-400 font-medium' : ''}`}>
+                                            {task.title}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+
+                              <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedPropertyForDashboard(item);
+                                  }}
+                                  className="text-[10px] font-extrabold text-[#00288e] hover:text-[#1e40af] transition-colors flex items-center gap-0.5 cursor-pointer"
+                                >
+                                  <span>Start Audit</span>
+                                  <ArrowRight className="w-3 h-3" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setInspections(prev => prev.filter(x => x.id !== item.id));
+                                    setToastMessage(`Cancelled and deleted inspection appointment for "${item.propertyName}"`);
+                                  }}
+                                  className="text-[10px] font-bold text-rose-500 hover:text-rose-700 transition-colors cursor-pointer"
+                                >
+                                  Cancel Appointment
+                                </button>
+                              </div>
+                            </div>
+                          ))
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* RIGHT COLUMN (7 Columns): Full Interactive Calendar Component */}
+                <div className="lg:col-span-7">
+                  <InspectionCalendar 
+                    inspections={inspections}
+                    onAddInspectionClick={() => {
+                      // Just focus the Property Name input field
+                      const propInput = document.querySelector('input[placeholder="e.g. Oakwood Luxury Apartments"]');
+                      if (propInput) {
+                        (propInput as HTMLInputElement).focus();
+                        propInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }}
+                  />
                 </div>
 
               </div>
-            );
-          })()}
+            </div>
+          )}
+
+          {/* SUB-TAB 3: INSPECTION NOTES */}
+          {inspectionSubTab === 'notes' && (
+            <div className="space-y-8 animate-fade-in">
+              <QuickNotesWidget 
+                onConvertNoteToInspection={handleConvertNoteToInspection}
+                onTriggerToast={(msg) => setToastMessage(msg)}
+              />
+            </div>
+          )}
+
+          {/* SUB-TAB 4: OTHERS - Analytics & Activity */}
+          {inspectionSubTab === 'others' && (
+            <div className="space-y-8 animate-fade-in">
+              {/* 7-Day Inspection Activity Chart Card */}
+              {/* <div className="bg-white border border-slate-200/80 rounded-2xl p-5 md:p-6 shadow-sm animate-fade-in space-y-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                  <div>
+                    <span className="text-[10px] font-extrabold text-[#00288e] bg-[#dde1ff]/60 px-2.5 py-1 rounded-md uppercase tracking-wider animate-pulse">
+                      Live Analytics
+                    </span>
+                    <h3 className="text-base font-extrabold text-slate-900 mt-2 tracking-tight">Inspection Activity (Last 7 Days)</h3>
+                  </div>
+                  <div className="flex items-center gap-4 text-[11px] font-bold text-slate-500">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-3 h-3 bg-[#00288e] rounded-xs" />
+                      <span>Completed</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-3 h-3 bg-[#818cf8] rounded-xs" />
+                      <span>Pending / Scheduled</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="h-64 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={last7DaysData}
+                      margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                      <XAxis 
+                        dataKey="name" 
+                        stroke="#94a3b8" 
+                        fontSize={10} 
+                        fontWeight={600}
+                        tickLine={false} 
+                        axisLine={false}
+                        dy={8}
+                      />
+                      <YAxis 
+                        stroke="#94a3b8" 
+                        fontSize={10} 
+                        fontWeight={600}
+                        tickLine={false} 
+                        axisLine={false}
+                        allowDecimals={false}
+                        dx={-8}
+                      />
+                      <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f8fafc' }} />
+                      <Bar 
+                        dataKey="Completed" 
+                        stackId="a" 
+                        fill="#00288e" 
+                        radius={[0, 0, 0, 0]} 
+                        maxBarSize={40}
+                      />
+                      <Bar 
+                        dataKey="Pending" 
+                        stackId="a" 
+                        fill="#818cf8" 
+                        radius={[4, 4, 0, 0]} 
+                        maxBarSize={40}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div> */}
+
+              
+
+              {/* Activity Logs */}
+              <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex-1">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
+                    Dashboard Search
+                  </label>
+                  <div className="flex items-center gap-2.5 px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl w-full">
+                    <Search className="w-4 h-4 text-slate-400 shrink-0" />
+                    <input 
+                      type="text" 
+                      placeholder="Search activity logs by title, metadata, or status..." 
+                      value={activitySearchText}
+                      onChange={(e) => setActivitySearchText(e.target.value)}
+                      className="bg-transparent border-none text-xs md:text-sm w-full focus:outline-none text-slate-800 placeholder-slate-400"
+                    />
+                    {activitySearchText && (
+                      <button 
+                        onClick={() => setActivitySearchText('')}
+                        className="text-slate-400 hover:text-slate-600 cursor-pointer"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="w-full md:w-auto">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
+                    Filter by Status Badge
+                  </label>
+                  <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+                    {[
+                      { key: 'all', label: 'All' },
+                      { key: 'Completed', label: 'Completed' },
+                      { key: 'In-Progress', label: 'In-Progress' },
+                      { key: 'Flagged', label: 'Flagged' }
+                    ].map((statusOpt) => (
+                      <button
+                        key={statusOpt.key}
+                        onClick={() => setActivityStatusFilter(statusOpt.key)}
+                        className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                          activityStatusFilter === statusOpt.key
+                            ? 'bg-[#00288e] text-white shadow-xs'
+                            : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50/50'
+                        }`}
+                      >
+                        {statusOpt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <ActivityLog 
+                logs={logs}
+                onMarkAsRead={handleMarkAsRead}
+                onMarkAllAsRead={handleMarkAllAsRead}
+                onClearLogs={handleClearLogs}
+                onDeleteLog={handleOnDeleteLog}
+                onSimulateEvent={handleSimulateEvent}
+                externalSearchQuery={activitySearchText}
+                externalStatusFilter={activityStatusFilter}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Properties Tab */}
+      {activeTab === 'properties' && (
+        <div className="space-y-8 animate-fade-in">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-950 mb-1">Managed Portfolios</h2>
+            <p className="text-sm text-slate-500">View properties currently linked to apex state board registry codes.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm text-center space-y-3">
+              <div className="w-12 h-12 bg-blue-100 text-[#00288e] rounded-xl flex items-center justify-center mx-auto">
+                <Building className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-2xl font-extrabold text-slate-950">{inspections.length}</p>
+                <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Total Buildings</p>
+              </div>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm text-center space-y-3">
+              <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mx-auto">
+                <Check className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-2xl font-extrabold text-[#00288e]">247</p>
+                <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Units Certified</p>
+              </div>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm text-center space-y-3">
+              <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mx-auto">
+                <ClipboardList className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-2xl font-extrabold text-slate-950">
+                  {inspections.filter(i => i.status === 'SCHEDULED' || i.status === 'IN_PROGRESS').length}
+                </p>
+                <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">Pending Syncs</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Properties List Block */}
+          <div className="space-y-4">
+            <div className="border-b border-slate-200 pb-3 flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-950">Registered Property Assets</h3>
+                <p className="text-xs text-slate-500 font-medium">Click any registered asset card to inspect or compile audits.</p>
+              </div>
+              <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+                {inspections.length} Assets
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {(() => {
+                const uniqueProperties: { propertyName: string; address: string; clientName?: string; inspection: InspectionItem }[] = [];
+                const propertyNamesSeen = new Set<string>();
+                inspections.forEach(item => {
+                  if (!propertyNamesSeen.has(item.propertyName)) {
+                    propertyNamesSeen.add(item.propertyName);
+                    uniqueProperties.push({
+                      propertyName: item.propertyName,
+                      address: item.address,
+                      clientName: item.clientName,
+                      inspection: item
+                    });
+                  }
+                });
+                return uniqueProperties.map((prop, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => setSelectedPropertyForDashboard(prop.inspection)}
+                    className="bg-white border border-slate-200 hover:border-[#00288e]/30 hover:shadow-lg rounded-2xl p-5 cursor-pointer transition-all flex flex-col justify-between space-y-4 group active:scale-[0.99]"
+                  >
+                    <div className="flex gap-4 items-start">
+                      <div className="w-12 h-12 rounded-xl bg-blue-50 text-[#00288e] flex items-center justify-center shrink-0 group-hover:bg-[#dde1ff] transition-colors">
+                        <Building className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h4 className="font-extrabold text-slate-900 group-hover:text-[#00288e] transition-colors text-sm sm:text-base">
+                          {prop.propertyName}
+                        </h4>
+                        <p className="text-xs text-slate-500 font-medium mt-1">
+                          {prop.address}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-slate-100 pt-4 flex items-center justify-between text-xs text-slate-500">
+                      <div>
+                        <span className="block text-[10px] text-slate-400 font-bold uppercase">Client Contact</span>
+                        <span className="font-semibold text-slate-700">{prop.clientName || 'Private Portfolio'}</span>
+                      </div>
+                      <span className="text-[#00288e] font-black group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                        Launch Dashboard →
+                      </span>
+                    </div>
+                  </div>
+                ));
+              })()}
+            </div>
+          </div>
+        </div>
+      )}
 
           {/* Knowledge Base Tab View */}
           {activeTab === 'knowledge' && (
